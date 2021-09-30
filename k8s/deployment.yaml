@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: robxx-app
+  namespace: adms
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: robxx-app
+  template:
+    metadata:
+      labels:
+        app: robxx-app
+    spec:
+      imagePullSecrets:
+        - name: robxx-central-acr
+      containers:
+        - image: admcentralacr.azurecr.io/robxx-app:0.1
+          name: robxx-app
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
+            limits:
+              memory: 1024Mi
+          readinessProbe:
+            httpGet:
+              path: 'actuator/health'
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: 'actuator/health'
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 8
+            timeoutSeconds: 10
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"

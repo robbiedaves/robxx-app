@@ -61,8 +61,10 @@ docker container prune
 # Clean up target files
 mvn clean
 
+# Build using multi stage docker file
 docker build -f multi.Dockerfile -t robxx/robxx-app:0.1 .
 
+# Run container
 docker run -d --name robxx-app-multi -p 8080:8080 robxx/robxx-app:0.1
 
 docker logs robxx-app-multi
@@ -75,7 +77,59 @@ docker rm robxx-app-multi
 ```
 
 
-## Other Commands
+## Build container for acr
 ```
-docker container prune
+# Loging to acr
+docker login admcentralacr.azurecr.io -u <user> -p <password>
+
+# package jar
+mvn package
+
+# Build docker images with acr tag
+docker build -t admcentralacr.azurecr.io/robxx-app:0.1 .
+
+# Push to acr
+docker push admcentralacr.azurecr.io/robxx-app:0.1
+
+```
+
+
+## Kubernetes
+```
+# get k8s/aks creds
+az login
+az account set -s <subscription id>
+az aks get-credentials -g adms-uksouth-sandpit-rg -n adms-uksouth-sandpit-aks -a
+
+# kubectl commands
+kubectl get nodes
+kubectl get pods -A
+
+# Image pull secret
+kubectl apply -f imagePullSecret.yaml
+# List secrets
+kubectl get secrets -n adms
+
+# apply deployment
+kubectl apply -f deployment.yaml
+kubectl get pods -n adms
+kubectl logs robxx-app-6ccb6644cb-lh7kl -n adms
+
+kubectl get pods -n adms -o wide
+
+kubectl apply -f service.yaml 
+kubectl get service -n adms
+# Get external IP and port for service and use in curl
+curl 10.175.130.98:80/hello
+
+# change replics in deployment
+kubectl apply -f deployment.yaml
+kubectl get pods -n adms
+curl 10.175.130.98:80/hello
+
+
+# Clean up
+kubeclt delete -f service.yaml
+kubectl delete -f deployment.yaml
+kubectl delete -f imagePullSecret.yaml
 ```

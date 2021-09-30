@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: robxx-app
+  namespace: adms
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: robxx-app
+  ports:
+  - protocol: TCP
+    # port - where other internal cluster services contact this service (tomcat)
+    port: 80
+    # targetPort - where actual service is running on pod
+    targetPort: 8080
+    # nodePort - where service can be accessed externally via kube-proxy
+    #nodePort: 30001
