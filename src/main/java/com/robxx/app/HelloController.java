@@ -25,6 +25,6 @@ public class HelloController {
             e.printStackTrace();
         }
         logger.info("/hello REST controller called");
-        return "Greetings from " + hostname;
+        return "Greetings from " + hostname + '\n';
     }
 }
