@@ -6,9 +6,6 @@ COPY pom.xml .
 COPY src src
 
 RUN mvn package
-RUN echo robxxx
-RUN pwd
-RUN ls -R
 
 FROM openjdk:11.0.12-jre-slim
 
