@@ -15,7 +15,18 @@ curl http://localhost:8080/actuator/health
 
 ## Docker
 ```
+# List images
+docker images
+# List continers
+docker ps
+
 docker run -ti --entrypoint /bin/sh ubuntu
+
+# Output distro info
+cat /etc/os-release
+
+docker pull centos
+docker run -ti --entrypoint /bin/sh centos
 
 # Output distro info
 cat /etc/os-release
